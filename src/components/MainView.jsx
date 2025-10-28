@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import CelestialBody from './CelestialBody';
-import { celestialBodies } from '../data/celestialBodies';
+import MoonOrbit from './MoonOrbit';
+import StarField from './StarField';
+import { celestialBodies, getMoon } from '../data/celestialBodies';
 import { PLANET_SIZE_MULTIPLIER, STARFIELD } from '../data/constants';
 
 /**
@@ -17,21 +19,12 @@ export default function MainView({ onSelectBody, selectedBodyId }) {
   const [viewport, setViewport] = useState({ width: 0, height: 0 });
   const [stars, setStars] = useState([]);
   const prefersReducedMotion = useReducedMotion();
-  const accentStars = useMemo(() => {
-    const sparkleCount = 24;
-    const sparkles = [];
-    for (let i = 0; i < sparkleCount; i++) {
-      sparkles.push({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 18 + 14,
-        delay: Math.random() * 3,
-        duration: Math.random() * 3 + 4,
-      });
-    }
-    return sparkles;
-  }, []);
+  const moonData = useMemo(() => getMoon(), []);
+  const bodies = useMemo(
+    () => celestialBodies.filter(body => body.id !== 'moon'),
+    []
+  );
+  // Removed accent star sparkles to keep only small star systems
 
   useEffect(() => {
     const updateViewport = () => {
@@ -46,27 +39,63 @@ export default function MainView({ onSelectBody, selectedBodyId }) {
     return () => window.removeEventListener('resize', updateViewport);
   }, []);
 
+  // Generate fixed positions for stars that are guaranteed to be visible
   useEffect(() => {
-    const generateStars = (count) => {
-      const newStars = [];
-      for (let i = 0; i < count; i++) {
-        newStars.push({
+    // Create a fixed pattern of stars that will be clearly visible
+    const createFixedStars = () => {
+      const stars = [];
+      const starCount = 100;
+      
+      // Create a grid of stars around the edges
+      for (let i = 0; i < starCount; i++) {
+        // Determine position based on index to create a pattern
+        let x, y;
+        
+        if (i < 30) {
+          // Top edge - evenly spaced
+          x = (i * 3.33) + 1; // Distribute across width
+          y = 5 + (Math.random() * 10); // Top area
+        } else if (i < 60) {
+          // Bottom edge - evenly spaced
+          x = ((i - 30) * 3.33) + 1;
+          y = 85 + (Math.random() * 10); // Bottom area
+        } else if (i < 80) {
+          // Left edge - evenly spaced
+          x = 5 + (Math.random() * 10);
+          y = ((i - 60) * 3.5) + 15; // Distribute along height
+        } else {
+          // Right edge - evenly spaced
+          x = 85 + (Math.random() * 10);
+          y = ((i - 80) * 3.5) + 15;
+        }
+        
+        // Add some randomness to the fixed positions
+        x += (Math.random() * 4) - 2;
+        y += (Math.random() * 4) - 2;
+        
+        // Ensure x and y are within bounds
+        x = Math.max(0, Math.min(100, x));
+        y = Math.max(0, Math.min(100, y));
+        
+        stars.push({
           id: i,
-          x: Math.random() * 100,
-          y: Math.random() * 100,
-          size: Math.random() * (STARFIELD.maxSize - STARFIELD.minSize) + STARFIELD.minSize,
-          opacity: Math.random() * 0.6 + 0.4,
-          duration: Math.random() * 3 + 2,
+          x,
+          y,
+          size: Math.random() * 6 + 4, // 4-10px (larger stars)
+          twinkle: i % 3 === 0, // Every third star twinkles
+          duration: Math.random() * 4 + 3,
+          delay: Math.random() * 5,
         });
       }
-      return newStars;
+      
+      return stars;
     };
-
-    setStars(generateStars(STARFIELD.count));
+    
+    setStars(createFixedStars());
   }, []);
 
   const rowMetrics = useMemo(() => {
-    const baseDiameters = celestialBodies.map(body => body.size * PLANET_SIZE_MULTIPLIER);
+    const baseDiameters = bodies.map(body => body.size * PLANET_SIZE_MULTIPLIER);
 
     if (!viewport.width || !viewport.height) {
       return {
@@ -77,7 +106,7 @@ export default function MainView({ onSelectBody, selectedBodyId }) {
       };
     }
 
-    const count = celestialBodies.length;
+    const count = bodies.length;
     const paddingX = Math.max(32, Math.min(160, viewport.width * 0.08));
     const availableWidth = Math.max(260, viewport.width - paddingX * 2);
     const gap = Math.max(32, Math.min(140, viewport.width * 0.04));
@@ -96,50 +125,11 @@ export default function MainView({ onSelectBody, selectedBodyId }) {
   return (
     <div className="relative w-screen h-screen bg-space overflow-hidden">
       {/* Gradient glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(58,80,163,0.35),_transparent_65%)] pointer-events-none" />
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,_rgba(58,80,163,0.12),_transparent_65%)] pointer-events-none" />
 
-      {/* Background stars */}
-      <div className="absolute inset-0 pointer-events-none">
-        {stars.map(star => (
-          <div
-            key={star.id}
-            className="absolute rounded-full bg-white/90 star"
-            style={{
-              left: `${star.x}%`,
-              top: `${star.y}%`,
-              width: `${star.size}px`,
-              height: `${star.size}px`,
-              opacity: star.opacity,
-              animationDuration: `${star.duration}s`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Removed extreme star overlay to keep only tiny star systems */}
 
-      {/* Accent star sparkles */}
-      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 6 }}>
-        {accentStars.map(star => (
-          <motion.span
-            key={`sparkle-${star.id}`}
-            className="absolute text-white drop-shadow-[0_0_22px_rgba(255,255,255,0.9)]"
-            style={{
-              left: `calc(${star.x}% - ${star.size / 2}px)`,
-              top: `calc(${star.y}% - ${star.size / 2}px)`,
-              fontSize: `${star.size}px`,
-            }}
-            initial={{ opacity: 0.3, scale: 0.8, rotate: 0 }}
-            animate={prefersReducedMotion
-              ? { opacity: 0.6, scale: 1, rotate: 0 }
-              : { opacity: [0.3, 0.9, 0.4], scale: [0.8, 1.15, 0.9], rotate: [0, 35, -20, 0] }}
-            transition={prefersReducedMotion
-              ? { duration: 0 }
-              : { duration: star.duration, repeat: Infinity, delay: star.delay, ease: 'easeInOut' }}
-            aria-hidden="true"
-          >
-            ✶
-          </motion.span>
-        ))}
-      </div>
+      {/* Removed accent star sparkles */}
 
       {/* Celestial bodies in horizontal layout */}
       <div
@@ -157,7 +147,7 @@ export default function MainView({ onSelectBody, selectedBodyId }) {
             transformOrigin: 'left center',
           }}
         >
-          {celestialBodies.map((body, index) => {
+          {bodies.map((body, index) => {
             const diameter = rowMetrics.diameters[index] || (body.size * PLANET_SIZE_MULTIPLIER);
             return (
               <div
@@ -166,6 +156,7 @@ export default function MainView({ onSelectBody, selectedBodyId }) {
                   width: `${diameter}px`,
                   display: 'flex',
                   justifyContent: 'center',
+                  position: 'relative',
                 }}
               >
                 <CelestialBody
@@ -174,6 +165,14 @@ export default function MainView({ onSelectBody, selectedBodyId }) {
                   size={diameter}
                   isSelected={selectedBodyId === body.id}
                 />
+                {body.id === 'earth' && (
+                  <MoonOrbit
+                    earthDiameter={diameter}
+                    moon={moonData}
+                    onSelectBody={onSelectBody}
+                    isSelected={selectedBodyId === moonData?.id}
+                  />
+                )}
               </div>
             );
           })}

@@ -26,7 +26,11 @@ body {
 }
 
 .star {
-  animation: twinkle ease-in-out infinite alternate;
+  will-change: opacity, transform;
+}
+
+.star--twinkle {
+  animation: twinkle ease-in-out infinite;
 }
 
 @keyframes twinkle {
@@ -39,13 +43,17 @@ body {
     transform: scale(1.05);
   }
   100% {
-    opacity: 0.35;
-    transform: scale(0.95);
+    opacity: 0.3;
+    transform: scale(0.9);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .star {
+    animation: none;
+  }
+
+  .star--twinkle {
     animation: none;
   }
 }

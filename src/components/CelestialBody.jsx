@@ -42,8 +42,8 @@ export default function CelestialBody({
     ? '0 0 38px rgba(255,196,86,0.85), 0 0 96px rgba(255,148,30,0.6)'
     : '0 0 32px rgba(255,255,255,0.85), 0 0 88px rgba(255,255,255,0.6)';
   const selectedShadow = isSun
-    ? '0 0 60px rgba(255,210,120,0.95), 0 0 130px rgba(255,160,40,0.75)'
-    : '0 0 48px rgba(255,255,255,0.95), 0 0 140px rgba(255,255,255,0.75)';
+    ? '0 0 90px rgba(255,210,120,0.7), 0 0 160px rgba(255,160,40,0.55)'
+    : `0 0 90px ${body.color}90, 0 0 160px ${body.color}60`;
   const haloBackground = isSun
     ? 'radial-gradient(circle at 50% 50%, rgba(255,205,112,0.35), rgba(255,140,0,0.08) 68%, transparent 100%)'
     : 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0.2) 60%, transparent 100%)';
@@ -97,7 +97,7 @@ export default function CelestialBody({
           width: `${visualSize}px`,
           height: `${visualSize}px`,
           boxShadow: isSelected ? selectedShadow : haloShadow,
-          background: haloBackground,
+          background: isSelected ? 'transparent' : haloBackground,
           borderRadius: containerBorderRadius,
           padding: `${innerPadding}px`,
           boxSizing: 'border-box',

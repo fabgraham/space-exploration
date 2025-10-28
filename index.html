@@ -1,14 +1,208 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Solar System Explorer - An interactive educational app for children to learn about the planets and celestial bodies" />
-    <title>Solar System Explorer</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Solar System Explorer - An interactive educational app for children to learn about the planets and celestial bodies" />
+  <title>Solar System Explorer</title>
+  <link rel="stylesheet" href="/stars.css" />
+
+  <style>
+    .star {
+      position: fixed;
+      background-color: white;
+      border-radius: 50%;
+      z-index: 999999;
+      box-shadow: 0 0 20px #fff, 0 0 30px #fff;
+      pointer-events: none;
+    }
+
+    .twinkle {
+      animation: twinkle 5s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+  <!-- Smaller, scattered stars closer to planets -->
+  <!-- Top section stars - more randomly scattered -->
+  <div
+    style="position: fixed; top: 3%; left: 8%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 7%; left: 21%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 2%; left: 32%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 9%; left: 44%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 4%; left: 57%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 11%; left: 69%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 6%; left: 83%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 13%; left: 14%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 16%; left: 38%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 18%; left: 76%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 5%; left: 93%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 15%; left: 52%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 8%; left: 3%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+
+  <!-- Middle section stars - more randomly scattered -->
+  <div
+    style="position: fixed; top: 24%; left: 6%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 31%; left: 19%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 37%; left: 33%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 29%; left: 47%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 41%; left: 59%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 27%; left: 71%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 35%; left: 84%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 44%; left: 16%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 39%; left: 42%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 46%; left: 77%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 33%; left: 2%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 26%; left: 28%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 42%; left: 95%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+
+  <!-- Bottom section stars - more randomly scattered -->
+  <div
+    style="position: fixed; top: 53%; left: 11%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 61%; left: 23%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 67%; left: 37%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 59%; left: 53%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 71%; left: 67%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 57%; left: 79%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 64%; left: 91%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 76%; left: 18%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 83%; left: 43%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 55%; left: 4%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 73%; left: 29%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 88%; left: 62%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 79%; left: 86%; width: 0.5px; height: 0.5px; background-color: white; border-radius: 50%; box-shadow: 0 0 0.5px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 79%; left: 73%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+
+  <!-- Additional scattered stars -->
+  <div
+    style="position: fixed; top: 21%; left: 31%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 49%; left: 26%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 43%; left: 69%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 73%; left: 29%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 88%; left: 57%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 92%; left: 83%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 86%; left: 9%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 94%; left: 34%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 52%; left: 22%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 48%; left: 78%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+  <div
+    style="position: fixed; top: 82%; left: 35%; width: 1px; height: 1px; background-color: white; border-radius: 50%; box-shadow: 0 0 1px #fff, 0 0 1px #fff; z-index: 99999999;">
+  </div>
+</body>
+
 </html>

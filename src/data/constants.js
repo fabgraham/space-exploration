@@ -36,8 +36,8 @@ export const MIN_TOUCH_TARGET = 80; // pixels
  * Used with Framer Motion
  */
 export const ANIMATION = {
-  zoomIn: 0.4,     // 400ms - Main View → Detail View
-  zoomOut: 0.3,    // 300ms - Detail View → Main View
+  zoomIn: 0.5,     // 500ms - Main View → Detail View
+  zoomOut: 0.5,    // 500ms - Detail View → Main View
   hover: 0.2,      // 200ms - Hover/touch feedback
   backdropFade: 0.3, // 300ms - Backdrop fade in/out
 };
@@ -80,7 +80,14 @@ export const PLANET_SIZE_MULTIPLIER = 26; // size 1 = 26px, size 10 = 260px
  * Starfield configuration
  */
 export const STARFIELD = {
-  count: 360,
-  minSize: 1,
-  maxSize: 4.5,
+  minCount: 100,
+  maxCount: 150,
+  minSize: 2,
+  maxSize: 6,
+  twinkleRatio: 0.2,
 };
+
+/**
+ * Detail view timing
+ */
+export const DETAIL_HOLD_DURATION = 2000; // milliseconds the focused body remains centered
