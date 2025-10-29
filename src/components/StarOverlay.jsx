@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Z_INDEX } from '../data/constants';
 
 const StarOverlay = () => {
   useEffect(() => {
@@ -10,7 +11,7 @@ const StarOverlay = () => {
     starContainer.style.width = '100%';
     starContainer.style.height = '100%';
     starContainer.style.pointerEvents = 'none';
-    starContainer.style.zIndex = '9999999'; // Extremely high z-index
+    starContainer.style.zIndex = String(Z_INDEX.background + 5);
     starContainer.id = 'star-overlay';
 
     // Add to body
