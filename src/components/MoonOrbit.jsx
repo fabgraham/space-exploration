@@ -64,7 +64,7 @@ export default function MoonOrbit({
         >
           <CelestialBody
             body={moon}
-            onClick={() => onSelectBody(moon)}
+            onClick={(position) => onSelectBody(moon, position)}
             size={moonDiameter}
             isSelected={isSelected}
           />

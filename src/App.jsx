@@ -19,16 +19,18 @@ import { ANIMATION } from './data/constants';
  */
 function App() {
   const [selectedBody, setSelectedBody] = useState(null);
+  const [sourcePosition, setSourcePosition] = useState(null);
   const [language] = useState('en'); // Phase 1: English only
   const [isAnimating, setIsAnimating] = useState(false);
   const animationResetRef = useRef(null);
 
-  const handleSelectBody = (body) => {
+  const handleSelectBody = (body, position) => {
     if (isAnimating) {
       return;
     }
 
     setSelectedBody(body);
+    setSourcePosition(position);
     setIsAnimating(true);
   };
 
@@ -68,6 +70,7 @@ function App() {
               body={selectedBody}
               onClose={handleCloseDetail}
               language={language}
+              sourcePosition={sourcePosition}
             />
           )}
         </AnimatePresence>

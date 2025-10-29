@@ -161,7 +161,7 @@ export default function MainView({ onSelectBody, selectedBodyId }) {
               >
                 <CelestialBody
                   body={body}
-                  onClick={() => onSelectBody(body)}
+                  onClick={(position) => onSelectBody(body, position)}
                   size={diameter}
                   isSelected={selectedBodyId === body.id}
                 />

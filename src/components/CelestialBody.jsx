@@ -53,29 +53,36 @@ export default function CelestialBody({
 
   const buttonStyle = isAbsolute
     ? {
-        left: position.x - touchTargetSize / 2,
-        top: position.y - touchTargetSize / 2,
-        width: `${touchTargetSize}px`,
-        height: `${touchTargetSize}px`,
-        padding: `${padding}px`,
-        backgroundColor: 'transparent',
-        border: 'none',
-        borderRadius: containerBorderRadius,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }
+      left: position.x - touchTargetSize / 2,
+      top: position.y - touchTargetSize / 2,
+      width: `${touchTargetSize}px`,
+      height: `${touchTargetSize}px`,
+      padding: `${padding}px`,
+      backgroundColor: 'transparent',
+      border: 'none',
+      borderRadius: containerBorderRadius,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }
     : {
-        width: `${touchTargetSize}px`,
-        height: `${touchTargetSize}px`,
-        padding: `${padding}px`,
-        backgroundColor: 'transparent',
-        border: 'none',
-        borderRadius: containerBorderRadius,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      };
+      width: `${touchTargetSize}px`,
+      height: `${touchTargetSize}px`,
+      padding: `${padding}px`,
+      backgroundColor: 'transparent',
+      border: 'none',
+      borderRadius: containerBorderRadius,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
+
+  const handleClick = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    onClick({ x: centerX, y: centerY });
+  };
 
   return (
     <motion.button
@@ -86,7 +93,7 @@ export default function CelestialBody({
         transition: { duration: ANIMATION.hover }
       }}
       whileTap={{ scale: 0.95 }}
-      onClick={onClick}
+      onClick={handleClick}
       aria-label={`${body.names.en}, tap to learn more`}
       layoutId={`${layoutId}-button`}
     >
@@ -113,9 +120,9 @@ export default function CelestialBody({
             className="w-full h-full object-contain"
             style={{
               filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-              transform: `scale(${imageScale})`,
-              transformOrigin: 'center',
             }}
+            initial={{ scale: imageScale }}
+            animate={{ scale: imageScale }}
             layoutId={`${layoutId}-image`}
             draggable={false}
           />

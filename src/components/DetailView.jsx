@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ANIMATION, DETAIL_HOLD_DURATION, DETAIL_IMAGE_SIZE } from '../data/constants';
+import { ANIMATION, DETAIL_IMAGE_SIZE } from '../data/constants';
 
 /**
  * DetailView Component
@@ -8,7 +8,7 @@ import { ANIMATION, DETAIL_HOLD_DURATION, DETAIL_IMAGE_SIZE } from '../data/cons
  * Handles the zoom-to-center interaction, audio playback, and timed return
  * to the main solar system view.
  */
-export default function DetailView({ body, onClose, language = 'en' }) {
+export default function DetailView({ body, onClose, language = 'en', sourcePosition }) {
   const audioRef = useRef(null);
   const exitTimerRef = useRef(null);
   const [imageError, setImageError] = useState(false);
@@ -19,6 +19,10 @@ export default function DetailView({ body, onClose, language = 'en' }) {
   const imageScale = body.imageScale ?? 1;
   const detailPadding = body.detailPadding ?? 24;
   const containerBorderRadius = '9999px';
+
+  // Calculate viewport center
+  const viewportCenterX = typeof window !== 'undefined' ? window.innerWidth / 2 : 0;
+  const viewportCenterY = typeof window !== 'undefined' ? window.innerHeight / 2 : 0;
 
   useEffect(() => {
     const updateImageSize = () => {
@@ -47,11 +51,12 @@ export default function DetailView({ body, onClose, language = 'en' }) {
     }
 
     audioRef.current.currentTime = 0;
+    // Play audio after zoom animation completes
     const playTimer = setTimeout(() => {
       audioRef.current?.play().catch(() => {
         // Browsers may block autoplay; no action needed on rejection.
       });
-    }, Math.max(120, ANIMATION.zoomIn * 1000 * 0.4));
+    }, ANIMATION.zoomIn * 1500);
 
     return () => clearTimeout(playTimer);
   }, [body.id]);
@@ -61,9 +66,10 @@ export default function DetailView({ body, onClose, language = 'en' }) {
       clearTimeout(exitTimerRef.current);
     }
 
+    // Exit after: zoom in + 1.5 seconds hold time
     exitTimerRef.current = setTimeout(() => {
       onClose();
-    }, (ANIMATION.zoomIn * 1000) + DETAIL_HOLD_DURATION);
+    }, (ANIMATION.zoomIn * 1000) + 1500);
 
     return () => {
       if (exitTimerRef.current) {
@@ -82,7 +88,7 @@ export default function DetailView({ body, onClose, language = 'en' }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-50"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -92,14 +98,30 @@ export default function DetailView({ body, onClose, language = 'en' }) {
       aria-label={`${body.names[language]} highlighted`}
     >
       <motion.div
-        className="relative z-10 flex flex-col items-center gap-6 p-6"
-        initial={{ scale: 0.75, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.75, opacity: 0 }}
-        transition={{ duration: ANIMATION.zoomIn, ease: 'easeInOut' }}
+        className="absolute flex flex-col items-center gap-6 p-6"
+        style={{
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+        initial={{
+          scale: 0.2,
+          opacity: 0
+        }}
+        animate={{
+          scale: 1,
+          opacity: 1
+        }}
+        exit={{
+          scale: 0.2,
+          opacity: 0
+        }}
+        transition={{
+          duration: ANIMATION.zoomIn,
+          ease: [0.25, 0.1, 0.25, 1.0] // Smooth easing curve
+        }}
       >
         <motion.div
-          layoutId={layoutId}
           className="relative flex items-center justify-center shadow-2xl"
           style={{
             width: `${imageSize}px`,
@@ -122,9 +144,9 @@ export default function DetailView({ body, onClose, language = 'en' }) {
               draggable={false}
               style={{
                 filter: 'drop-shadow(0 8px 18px rgba(0,0,0,0.35))',
-                transform: `scale(${imageScale})`,
-                transformOrigin: 'center',
               }}
+              initial={{ scale: imageScale }}
+              animate={{ scale: imageScale }}
             />
           ) : (
             <motion.div
