@@ -1,8 +1,12 @@
 import React from 'react';
+import { Z_INDEX } from '../data/constants';
 
 const StarBackground = () => {
   return (
-    <div className="fixed inset-0 z-[9999]" style={{ pointerEvents: 'none' }}>
+    <div
+      className="fixed inset-0"
+      style={{ pointerEvents: 'none', zIndex: Z_INDEX.background + 5 }}
+    >
       <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
         <rect width="100%" height="100%" fill="transparent" />
         
