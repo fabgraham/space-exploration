@@ -87,104 +87,104 @@ export default function DetailView({ body, onClose, language = 'en', sourcePosit
   }, []);
 
   return (
-    <motion.div
-      className="fixed inset-0 z-50"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: ANIMATION.backdropFade, ease: 'easeInOut' }}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${body.names[language]} highlighted`}
-    >
       <motion.div
-        className="absolute flex flex-col items-center gap-6 p-6"
-        style={{
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-        initial={{
-          scale: 0.2,
-          opacity: 0
-        }}
-        animate={{
-          scale: 1,
-          opacity: 1
-        }}
-        exit={{
-          scale: 0.2,
-          opacity: 0
-        }}
-        transition={{
-          duration: ANIMATION.zoomIn,
-          ease: [0.25, 0.1, 0.25, 1.0] // Smooth easing curve
-        }}
+        className="fixed inset-0 z-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: ANIMATION.backdropFade, ease: 'easeInOut' }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${body.names[language]} highlighted`}
       >
         <motion.div
-          className="relative flex items-center justify-center shadow-2xl"
+          className="absolute flex flex-col items-center gap-6 p-6"
           style={{
-            width: `${imageSize}px`,
-            height: `${imageSize}px`,
-            boxShadow: `0 0 120px ${body.color}a0`,
-            borderRadius: containerBorderRadius,
-            padding: `${detailPadding}px`,
-            boxSizing: 'border-box',
-            background: 'transparent',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
           }}
-          transition={{ duration: ANIMATION.zoomIn, ease: 'easeInOut' }}
+          initial={{
+            scale: 0.2,
+            opacity: 0
+          }}
+          animate={{
+            scale: 1,
+            opacity: 1
+          }}
+          exit={{
+            scale: 0.2,
+            opacity: 0
+          }}
+          transition={{
+            duration: ANIMATION.zoomIn,
+            ease: [0.25, 0.1, 0.25, 1.0] // Smooth easing curve
+          }}
         >
-          {shouldRenderImage ? (
-            <motion.img
-              layoutId={`${layoutId}-image`}
-              src={body.imagePath}
-              alt={body.names[language]}
-              onError={() => setImageError(true)}
-              className="w-full h-full object-contain"
-              draggable={false}
-              style={{
-                filter: 'drop-shadow(0 8px 18px rgba(0,0,0,0.35))',
-              }}
-              initial={{ scale: imageScale }}
-              animate={{ scale: imageScale }}
-            />
-          ) : (
-            <motion.div
-              layoutId={`${layoutId}-placeholder`}
-              className="w-full h-full rounded-full flex items-center justify-center text-white font-bold select-none"
-              style={{
-                background: `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.65), ${body.color})`,
-              }}
-            >
-              <span
-                className="text-center uppercase tracking-widest drop-shadow-lg"
+          <motion.div
+            className="relative flex items-center justify-center shadow-2xl"
+            style={{
+              width: `${imageSize}px`,
+              height: `${imageSize}px`,
+              boxShadow: `0 0 120px ${body.color}a0`,
+              borderRadius: containerBorderRadius,
+              padding: `${detailPadding}px`,
+              boxSizing: 'border-box',
+              background: 'transparent',
+            }}
+            transition={{ duration: ANIMATION.zoomIn, ease: 'easeInOut' }}
+          >
+            {shouldRenderImage ? (
+              <motion.img
+                layoutId={`${layoutId}-image`}
+                src={body.imagePath}
+                alt={body.names[language]}
+                onError={() => setImageError(true)}
+                className="w-full h-full object-contain"
+                draggable={false}
                 style={{
-                  fontSize: `${imageSize / 5.5}px`,
-                  textShadow: '0 5px 16px rgba(0,0,0,0.65)',
+                  filter: 'drop-shadow(0 8px 18px rgba(0,0,0,0.35))',
+                }}
+                initial={{ scale: imageScale }}
+                animate={{ scale: imageScale }}
+              />
+            ) : (
+              <motion.div
+                layoutId={`${layoutId}-placeholder`}
+                className="w-full h-full rounded-full flex items-center justify-center text-white font-bold select-none"
+                style={{
+                  background: `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.65), ${body.color})`,
                 }}
               >
-                {body.names[language]}
-              </span>
-            </motion.div>
-          )}
+                <span
+                  className="text-center uppercase tracking-widest drop-shadow-lg"
+                  style={{
+                    fontSize: `${imageSize / 5.5}px`,
+                    textShadow: '0 5px 16px rgba(0,0,0,0.65)',
+                  }}
+                >
+                  {body.names[language]}
+                </span>
+              </motion.div>
+            )}
+          </motion.div>
+
+          <motion.p
+            className="text-white text-4xl md:text-5xl font-bold uppercase tracking-[0.3em] text-center drop-shadow-lg select-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut', delay: 0.15 }}
+          >
+            {body.names[language]}
+          </motion.p>
+
+          <audio
+            ref={audioRef}
+            src={body.audioPath[language]}
+            aria-label={`Pronunciation of ${body.names[language]}`}
+          />
         </motion.div>
-
-        <motion.p
-          className="text-white text-4xl md:text-5xl font-bold uppercase tracking-[0.3em] text-center drop-shadow-lg select-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3, ease: 'easeInOut', delay: 0.15 }}
-        >
-          {body.names[language]}
-        </motion.p>
-
-        <audio
-          ref={audioRef}
-          src={body.audioPath[language]}
-          aria-label={`Pronunciation of ${body.names[language]}`}
-        />
       </motion.div>
-    </motion.div>
-  );
+    );
 }
