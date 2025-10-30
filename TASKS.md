@@ -515,32 +515,39 @@
 
 ---
 
-### Task 3.3: Create DetailView Component
+### Task 3.3: Create DetailView Component with Shared Element Transition
 **Priority:** High
-**Estimated Time:** 60 minutes
-**Dependencies:** Task 2.1
+**Estimated Time:** 90 minutes
+**Dependencies:** Task 2.1, Task 3.1 (CelestialBody must have layoutId)
+
+**Animation Approach:** Shared Element Transition using Framer Motion's `layoutId`
 
 **Steps:**
 1. Create `src/components/DetailView.jsx`
-2. Implement full-screen overlay:
+2. Implement full-screen overlay with shared element transition:
    ```javascript
    import { motion } from 'framer-motion';
-   import { useEffect, useRef, useState } from 'react';
+   import { useEffect, useRef, useState, useMemo } from 'react';
 
    export default function DetailView({ body, onClose, language = 'en' }) {
      const audioRef = useRef(null);
      const [imageError, setImageError] = useState(false);
 
-     useEffect(() => {
-       // Play audio on mount
-       if (audioRef.current) {
-         audioRef.current.play().catch(err => {
-           console.log('Audio autoplay blocked:', err);
-         });
-       }
+     // Generate matching layoutId (must match CelestialBody!)
+     const layoutId = useMemo(() => `celestial-${body.id}`, [body.id]);
 
-       // Stop audio on unmount
+     useEffect(() => {
+       // Play audio after animation completes (500ms)
+       const playTimer = setTimeout(() => {
+         if (audioRef.current) {
+           audioRef.current.play().catch(err => {
+             console.log('Audio autoplay blocked:', err);
+         });
+         }
+       }, 500);
+
        return () => {
+         clearTimeout(playTimer);
          if (audioRef.current) {
            audioRef.current.pause();
            audioRef.current.currentTime = 0;
@@ -567,76 +574,88 @@
        >
          {/* Backdrop */}
          <div
-           className="absolute inset-0 bg-black bg-opacity-85 backdrop-blur-sm"
+           className="absolute inset-0 bg-black bg-opacity-85"
            onClick={onClose}
          />
 
-         {/* Content */}
-         <motion.div
-           className="relative z-10 flex flex-col items-center gap-6 p-8"
-           initial={{ scale: 0.8, opacity: 0 }}
-           animate={{ scale: 1, opacity: 1 }}
-           exit={{ scale: 0.8, opacity: 0 }}
-           transition={{ duration: 0.4, delay: 0.1 }}
-         >
-           {/* Back Button */}
-           <button
-             className="absolute top-4 left-4 w-20 h-20 flex items-center justify-center bg-black bg-opacity-60 rounded-full text-white text-4xl hover:scale-110 transition-transform"
-             onClick={onClose}
-             aria-label="Go back to solar system"
-           >
-             ←
-           </button>
-
-           {/* Planet Image */}
+         {/* Content with shared element transition */}
+         <div className="relative z-10 flex flex-col items-center gap-6 p-8">
+           {/* Planet Image with matching layoutId - creates seamless morph */}
            {!imageError ? (
-             <img
+             <motion.img
+               layoutId={`${layoutId}-image`}  // Matches CelestialBody layoutId!
                src={body.imagePath}
                alt={body.names[language]}
                onError={() => setImageError(true)}
                className="w-80 h-80 md:w-96 md:h-96 lg:w-[500px] lg:h-[500px] rounded-full object-cover shadow-2xl"
              />
            ) : (
-             <div
+             <motion.div
+               layoutId={`${layoutId}-placeholder`}
                className="w-80 h-80 md:w-96 md:h-96 lg:w-[500px] lg:h-[500px] rounded-full flex items-center justify-center shadow-2xl"
                style={{ backgroundColor: body.color }}
              >
                <span className="text-white text-6xl font-bold">
                  {body.names[language]}
                </span>
-             </div>
+             </motion.div>
            )}
 
-           {/* Title */}
-           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white uppercase text-center drop-shadow-lg">
+           {/* Title fades in after image transition */}
+           <motion.h1
+             className="text-5xl md:text-6xl lg:text-7xl font-bold text-white uppercase text-center drop-shadow-lg"
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             transition={{ duration: 0.2, delay: 0.3 }}
+           >
              {body.names[language]}
-           </h1>
+           </motion.h1>
 
-           {/* Audio (hidden, auto-plays) */}
+           {/* Audio (hidden, auto-plays after delay) */}
            <audio ref={audioRef} src={body.audioPath[language]} />
-         </motion.div>
+         </div>
        </motion.div>
      );
    }
    ```
 
-3. Add Framer Motion animations (zoom in/out)
-4. Implement auto-play audio
-5. Add back button (Unicode arrow)
-6. Handle Escape key to close
-7. Handle missing images/audio gracefully
+3. **Key Implementation Details:**
+   - Use `layoutId={`celestial-${body.id}-image`}` on image element
+   - Must match exact layoutId pattern from CelestialBody component
+   - Framer Motion automatically handles position/size transition
+   - No manual position calculations needed
+   - Backdrop fades independently
+   - Title fades in after transition (300ms delay)
+
+4. **Update CelestialBody.jsx (verify layoutId exists):**
+   - Ensure image has `layoutId={`celestial-${body.id}-image`}`
+   - This creates the connection for shared element transition
+
+5. **Update App.jsx (wrap with AnimatePresence):**
+   ```javascript
+   <AnimatePresence>
+     {selectedBody && (
+       <DetailView body={selectedBody} onClose={handleCloseDetail} language={language} />
+     )}
+   </AnimatePresence>
+   ```
+
+6. Handle Escape key, audio playback, and missing images
 
 **Acceptance Criteria:**
-- ✅ Full-screen overlay with backdrop
+- ✅ Full-screen overlay with backdrop fade
+- ✅ **Shared element transition** - image morphs from source to center
+- ✅ Image has matching `layoutId` prop (connects to CelestialBody)
+- ✅ Position animates automatically (Framer Motion handles)
 - ✅ Large planet image (300-500px)
-- ✅ Title in large text (48-72px)
-- ✅ Back button (top-left, 80px, Unicode arrow)
-- ✅ Audio auto-plays on open
+- ✅ Title in large text (48-72px), fades in after transition
+- ✅ Audio plays 500ms after animation completes
 - ✅ Audio stops on close
 - ✅ Escape key closes view
 - ✅ Click backdrop to close
-- ✅ Framer Motion zoom animations
+- ✅ **No "flying off screen" bugs** - library manages coordinates
 - ✅ Graceful fallbacks (missing assets)
+- ✅ Works responsively on all screen sizes
 
 ---
 

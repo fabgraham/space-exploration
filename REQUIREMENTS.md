@@ -64,7 +64,7 @@ The application must display the following celestial bodies:
 - **Title/Name:** Large text displaying the name in English
   - Example: "Mercury"
 - **Typography:** Large, clear, high-contrast text (minimum 32px font size)
-- **Back Button:** Large, obvious Unicode arrow (← or ↩) to return to Main View (minimum 80px × 80px touch target)
+
 
 #### Audio Pronunciation (Phase 1: English Only)
 - **Auto-play:** Audio pronunciation plays automatically when Detail View opens
@@ -75,10 +75,17 @@ The application must display the following celestial bodies:
 - **Graceful Fallback:** If audio file missing, app continues to work (silent mode)
 
 #### Interaction
-- **Zoom Animation:** Smooth zoom-in transition from Main View (300-500ms duration)
+- **Zoom Animation:** Shared element transition using Framer Motion's `layoutId`
+  - Planet image seamlessly grows from its position in Main View to screen center (400-500ms)
+  - Audio plays after approximately 1 second
+  - After playing, wait 0.5 seconds to continue to the nex steps
+  - Background dims with dark overlay during transition
+  - Planet name fades in after transition completes
+  - Maintains visual continuity - element "morphs" rather than jumps
+  - Prevents position calculation bugs by using Framer Motion's automatic layout transitions
+  - Reverse animation on close - smoothly returns to original position
 - **Back Navigation:**
-  - Large back button (arrow or "Back" text)
-  - Clicking anywhere on backdrop optionally returns to Main View
+  - Clicking anywhere on backdrop returns to Main View
   - Smooth zoom-out animation when returning to Main View
 
 ---

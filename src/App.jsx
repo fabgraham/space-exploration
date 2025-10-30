@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, LayoutGroup } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import MainView from './components/MainView';
 import DetailView from './components/DetailView';
 import StarOverlay from './components/StarOverlay';
@@ -19,18 +19,16 @@ import { ANIMATION } from './data/constants';
  */
 function App() {
   const [selectedBody, setSelectedBody] = useState(null);
-  const [sourcePosition, setSourcePosition] = useState(null);
   const [language] = useState('en'); // Phase 1: English only
   const [isAnimating, setIsAnimating] = useState(false);
   const animationResetRef = useRef(null);
 
-  const handleSelectBody = (body, position) => {
+  const handleSelectBody = (body) => {
     if (isAnimating) {
       return;
     }
 
     setSelectedBody(body);
-    setSourcePosition(position);
     setIsAnimating(true);
   };
 
@@ -55,30 +53,28 @@ function App() {
   }, []);
 
   return (
-    <LayoutGroup id="solar-system">
-      <div className="w-screen h-screen overflow-hidden">
-        {/* Main solar system view */}
-        <MainView
-          onSelectBody={handleSelectBody}
-          selectedBodyId={selectedBody?.id}
-        />
+    <div className="w-screen h-screen overflow-hidden">
+      {/* Main solar system view */}
+      <MainView
+        onSelectBody={handleSelectBody}
+        selectedBodyId={selectedBody?.id}
+      />
 
-        {/* Detail view (with exit animation support) */}
-        <AnimatePresence>
-          {selectedBody && (
-            <DetailView
-              body={selectedBody}
-              onClose={handleCloseDetail}
-              language={language}
-              sourcePosition={sourcePosition}
-            />
-          )}
-        </AnimatePresence>
-        {/* Restore larger star overlay and background */}
-        <StarBackground />
-        <StarOverlay />
-       </div>
-     </LayoutGroup>
+      {/* Detail view with AnimatePresence for exit animations */}
+      <AnimatePresence>
+        {selectedBody && (
+          <DetailView
+            body={selectedBody}
+            onClose={handleCloseDetail}
+            language={language}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Restore larger star overlay and background */}
+      <StarBackground />
+      <StarOverlay />
+    </div>
   );
 }
 

@@ -28,6 +28,7 @@ export default function MoonOrbit({
     <div
       className="absolute inset-0 flex items-center justify-center pointer-events-none"
       aria-hidden={false}
+      style={{ zIndex: isSelected ? 1000 : 'auto' }}
     >
       {/* Orbital path ring */}
       <div

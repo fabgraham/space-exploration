@@ -157,6 +157,8 @@ export default function MainView({ onSelectBody, selectedBodyId }) {
                   display: 'flex',
                   justifyContent: 'center',
                   position: 'relative',
+                  // Ensure Earth + Moon group sits above others when Moon is selected
+                  zIndex: body.id === 'earth' && selectedBodyId === 'moon' ? 1000 : 'auto',
                 }}
               >
                 <CelestialBody

@@ -348,48 +348,133 @@ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif
 
 ### 4.1 Zoom In (Main View → Detail View)
 
+**Animation Technique:** Framer Motion Shared Element Transition (`layoutId`)
+
 **Trigger:** User clicks/taps a celestial body
 
 **Animation Sequence:**
-1. **Clicked body scales up** (0.95 → 1.5x) — 150ms
-2. **Backdrop fades in** (opacity 0 → 0.85) — 300ms
-3. **Detail View content appears** (scale 0.8 → 1.0, opacity 0 → 1) — 400ms
-4. **Audio plays** (after animation completes)
+1. **Shared element morph begins** — Planet image with matching `layoutId` in both CelestialBody and DetailView
+2. **Image smoothly grows** from small size → large size (400-500ms)
+3. **Position animates** from original location → screen center (simultaneous with size)
+4. **Backdrop fades in** (opacity 0 → 0.85) — 300ms (starts immediately)
+5. **Planet name fades in** below image (opacity 0 → 1, 200ms, delayed 300ms after animation starts)
+6. **Audio plays** (1 second after animation completes)
 
 **Implementation (Framer Motion):**
 ```javascript
-// Backdrop
-initial={{ opacity: 0 }}
-animate={{ opacity: 1 }}
-transition={{ duration: 0.3, ease: 'easeOut' }}
+// CelestialBody.jsx - source element
+<motion.img
+  layoutId={`celestial-${body.id}-image`}
+  src={body.imagePath}
+  alt={body.names.en}
+  className="w-full h-full object-contain"
+/>
 
-// Content
-initial={{ scale: 0.8, opacity: 0 }}
-animate={{ scale: 1, opacity: 1 }}
-transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
+// DetailView.jsx - destination element
+<AnimatePresence>
+  <motion.div className="fixed inset-0 z-50">
+    {/* Backdrop */}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+      className="absolute inset-0 bg-black bg-opacity-85"
+    />
+
+    {/* Content container */}
+    <div className="relative flex items-center justify-center h-full">
+      {/* Image with matching layoutId - creates seamless morph */}
+      <motion.img
+        layoutId={`celestial-${body.id}-image`}
+        src={body.imagePath}
+        alt={body.names[language]}
+        className="w-80 h-80 md:w-96 md:h-96 lg:w-[500px] lg:h-[500px]"
+      />
+
+      {/* Name fades in after transition */}
+      <motion.h1
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2, delay: 0.3 }}
+        className="text-5xl font-bold text-white"
+      >
+        {body.names[language]}
+      </motion.h1>
+    </div>
+  </motion.div>
+</AnimatePresence>
 ```
 
-**Easing:** `ease-out` (fast start, slow end)
-**Total Duration:** ~400-500ms
+**Easing:** Framer Motion's default spring physics (natural, bouncy feel) or custom ease curve
+**Total Duration:** ~400-500ms for layout transition
+**Key Benefits:**
+- **No manual position calculations** - Framer Motion handles automatically
+- **Prevents "flying off screen" bugs** - Library manages coordinate transforms
+- **Natural, industry-standard UX** - Used by iOS Photos, Google Photos
+- **Visual continuity** - Element "morphs" rather than teleporting
+- **Automatic responsive handling** - Works across all screen sizes
 
 ### 4.2 Zoom Out (Detail View → Main View)
 
-**Trigger:** User clicks back button or backdrop
+**Animation Technique:** Reverse Shared Element Transition (automatic via Framer Motion)
+
+**Trigger:** User clicks back button, backdrop, or audio finishes playing
 
 **Animation Sequence:**
-1. **Detail View content scales down** (1.0 → 0.8, opacity 1 → 0) — 300ms
-2. **Backdrop fades out** (opacity 0.85 → 0) — 300ms
-3. **Main View re-appears** (already visible, no animation needed)
-4. **Audio stops** (if still playing)
+1. **Shared element morph reverses** — Image with matching `layoutId` automatically morphs back
+2. **Image smoothly shrinks** from large size → original small size (300-400ms)
+3. **Position animates** from center → original location (simultaneous with size)
+4. **Backdrop fades out** (opacity 0.85 → 0) — 300ms (starts immediately)
+5. **Planet name fades out** (opacity 1 → 0, 100ms, no delay)
+6. **Audio stops** (if still playing)
 
 **Implementation (Framer Motion):**
 ```javascript
-exit={{ scale: 0.8, opacity: 0 }}
-transition={{ duration: 0.3, ease: 'easeIn' }}
+// App.jsx - AnimatePresence enables exit animation
+<AnimatePresence>
+  {selectedBody && (
+    <DetailView
+      body={selectedBody}
+      onClose={handleCloseDetail}
+      language={language}
+    />
+  )}
+</AnimatePresence>
+
+// DetailView.jsx - exit animation
+<motion.div
+  className="fixed inset-0 z-50"
+  exit={{ opacity: 0 }}
+  transition={{ duration: 0.3, ease: 'easeIn' }}
+>
+  {/* Backdrop exit */}
+  <motion.div
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.3 }}
+  />
+
+  {/* Image with layoutId - automatically morphs back */}
+  <motion.img
+    layoutId={`celestial-${body.id}-image`}
+    // No exit props needed - Framer Motion handles reverse
+  />
+
+  {/* Name exit */}
+  <motion.h1
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.1 }}
+  />
+</motion.div>
 ```
 
-**Easing:** `ease-in` (slow start, fast end)
-**Total Duration:** ~300ms
+**Easing:** Framer Motion's default spring physics (or custom ease-in)
+**Total Duration:** ~300-400ms
+**Key Benefits:**
+- **Automatic reverse** - Framer Motion calculates reverse path automatically
+- **Returns to exact position** - Image morphs back to original location precisely
+- **Smooth bidirectional animation** - Exit mirrors entry for consistency
+- **No manual exit calculations** - Library handles all coordinate math
 
 ### 4.3 Hover/Touch Feedback
 

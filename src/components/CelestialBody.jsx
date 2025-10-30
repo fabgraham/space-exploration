@@ -27,6 +27,25 @@ export default function CelestialBody({
   const imageScale = body.imageScale ?? 1;
   const innerPadding = body.imagePadding ?? 0;
 
+  // Custom zoom scales per celestial body
+  const getZoomScale = () => {
+    const baseZoom = 3.2;
+    switch (body.id) {
+      case 'sun':
+        return baseZoom * 0.85 * 0.9; // 15% + additional 10% reduction = 2.295x
+      case 'mercury':
+      case 'venus':
+      case 'earth':
+      case 'mars':
+      case 'moon':
+        return baseZoom * 1.5; // 20% larger = 3.6x
+      default:
+        return baseZoom; // All other planets (Jupiter, Saturn, Uranus, Neptune) = 3x
+    }
+  };
+
+  const zoomScale = getZoomScale();
+
   const isAbsolute = position && typeof position.x === 'number' && typeof position.y === 'number';
   const isSun = body.id === 'sun';
 
@@ -64,6 +83,7 @@ export default function CelestialBody({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      zIndex: isSelected ? 1000 : 'auto',
     }
     : {
       width: `${touchTargetSize}px`,
@@ -75,6 +95,7 @@ export default function CelestialBody({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      zIndex: isSelected ? 1000 : 'auto',
     };
 
   const handleClick = (e) => {
@@ -108,6 +129,8 @@ export default function CelestialBody({
           borderRadius: containerBorderRadius,
           padding: `${innerPadding}px`,
           boxSizing: 'border-box',
+          // Lift the animated wrapper itself above siblings
+          zIndex: isSelected ? 1001 : 'auto',
         }}
         transition={{ type: 'spring', stiffness: 200, damping: 20 }}
       >
@@ -122,7 +145,8 @@ export default function CelestialBody({
               filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
             }}
             initial={{ scale: imageScale }}
-            animate={{ scale: imageScale }}
+            animate={{ scale: isSelected ? imageScale * zoomScale : imageScale }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
             layoutId={`${layoutId}-image`}
             draggable={false}
           />
@@ -133,6 +157,9 @@ export default function CelestialBody({
             style={{
               background: `radial-gradient(circle at 35% 30%, rgba(255,255,255,0.6), ${body.color})`,
             }}
+            initial={{ scale: 1 }}
+            animate={{ scale: isSelected ? zoomScale : 1 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
           >
             <span
               className="text-center uppercase tracking-wide"
