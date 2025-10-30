@@ -53,7 +53,13 @@ function App() {
   }, []);
 
   return (
-    <div className="w-screen h-screen overflow-hidden">
+    <div className="relative w-screen h-screen overflow-hidden">
+      <header className="absolute top-6 left-1/2 z-20 -translate-x-1/2 px-4 text-center">
+        <h1 className="fun-title text-[45px] sm:text-[84px] md:text-[96px] lg:text-[128px] md:whitespace-nowrap tracking-[0.18em] drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)] uppercase">
+          The Solar System
+        </h1>
+      </header>
+
       {/* Main solar system view */}
       <MainView
         onSelectBody={handleSelectBody}

@@ -21,6 +21,14 @@ body {
   background-color: #0a0e27;
 }
 
+h1 {
+  color: white; /* Fallback */
+}
+
+.fun-title {
+  font-family: 'Comic Sans MS', 'Baloo 2', 'Arial Rounded MT Bold', cursive;
+}
+
 * {
   touch-action: manipulation;
 }
